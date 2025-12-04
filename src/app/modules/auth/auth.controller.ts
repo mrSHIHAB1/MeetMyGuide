@@ -7,6 +7,7 @@ import { createUserTokens } from "../../utils/userTokens"
 import { setAuthCookie } from "../../utils/setCookie"
 import { sendResponse } from "../../utils/sendResponse"
 import httpStatus from "http-status-codes"
+import { AuthServices } from "./auth.service"
 
 
 const credentialsLogin = (req: Request, res: Response, next: NextFunction) => {
@@ -59,7 +60,19 @@ const logout=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
         data: null,
     })
 })
+const getMe = catchAsync(async (req: Request, res: Response) => {
+    const userSession = req.cookies;
+    const result = await AuthServices.getMe(userSession);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "User retrive successfully!",
+        data: result,
+    });
+});
 export const AuthControllers = {
     credentialsLogin,
-   logout
+   logout,
+   getMe
 }

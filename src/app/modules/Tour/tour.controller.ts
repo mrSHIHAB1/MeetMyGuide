@@ -5,7 +5,8 @@ import { sendResponse } from '../../utils/sendResponse';
 import httpStatus from 'http-status-codes';
 
 const createTour = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const tour = await TourService.createTour(req.body);
+  const files = (req.files as Express.Multer.File[]) || [];
+  const tour = await TourService.createTour(req.body, files);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.CREATED,
@@ -38,7 +39,8 @@ const getTour = catchAsync(async (req: Request, res: Response, next: NextFunctio
 
 const updateTour = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
-  const updated = await TourService.updateTour(id, req.body);
+  const files = (req.files as Express.Multer.File[]) || [];
+  const updated = await TourService.updateTour(id, req.body, files);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,

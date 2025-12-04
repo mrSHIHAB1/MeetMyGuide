@@ -8,6 +8,7 @@ export const createTourZodSchema = z.object({
   duration: z.number({ message: 'Duration is required' }).positive(),
   meetingPoint: z.string().optional(),
   maxGroupSize: z.number().optional(),
+  guide:z.string({error:"Guide ID is required"}),
   images: z.array(z.string()).optional(),
 });
 

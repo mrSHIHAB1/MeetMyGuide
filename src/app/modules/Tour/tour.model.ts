@@ -11,7 +11,7 @@ const TourSchema: Schema<ITour> = new Schema(
     meetingPoint: { type: String },
     maxGroupSize: { type: Number },
     images: { type: [String] },
-    guide: { type: Schema.Types.ObjectId, ref: 'User' },
+   guide: { type: Schema.Types.ObjectId, ref: 'User' },
     isDeleted: { type: Boolean, default: false },
     status: { type: String, enum: Object.values(TourStatus), default: TourStatus.ACTIVE },
   },

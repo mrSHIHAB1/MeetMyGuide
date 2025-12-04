@@ -4,9 +4,9 @@ import { AuthRoutes } from '../modules/auth/auth.routes';
 import { TourRoutes } from '../modules/Tour/tour.route';
 import { BookingRoutes } from '../modules/booking/booking.route';
 
-const router= express.Router();
+const router = express.Router();
 const moduleRoutes = [
- 
+
     {
         path: '/user',
         route: UserRoutes

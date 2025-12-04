@@ -21,8 +21,25 @@ router.post(
   }
 );
 
-router.post("/register/admin", fileUploader.upload.single('file'), validateRequest(createAdminZodSchema), UserControllers.createAdmin)
-router.post("/register/guide", fileUploader.upload.single('file'), validateRequest(createGuideZodSchema), UserControllers.createGuide)
-router.get("/all-users",checkAuth(Role.ADMIN), UserControllers.getAllUsers)
+router.post("/register/admin",
+   fileUploader.upload.single('file'), 
+(req: Request, res: Response, next: NextFunction) => {
+  req.body = userValidation.createAdminZodSchema.parse(
+      JSON.parse(req.body.data)
+    );
+    return UserControllers.createAdmin(req, res, next);
+} );
+
+    
+  
+router.post("/register/guide",fileUploader.upload.single('file'), 
+(req: Request, res: Response, next: NextFunction)=> {
+   req.body=userValidation.createGuideZodSchema.parse(
+      JSON.parse(req.body.data)
+    ); 
+    return UserControllers.createGuide(req, res, next)
+
+})
+router.get("/all-users", UserControllers.getAllUsers)
 router.patch("/updateUsers/:id",validateRequest(updateZodSchema),checkAuth(Role.ADMIN),UserControllers.Updatuser)
 export const UserRoutes=router;

@@ -23,6 +23,7 @@ const createTourist=async(payload:Partial<IUser>, file?: Express.Multer.File)=>{
     const hashedPassword=await bcryptjs.hash(password as string,Number(envVars.BCRYPT_SALT_ROUND))
     const user =await User.create({
         email,
+        role: 'TOURIST',
         password:hashedPassword,
         picture: profilePicture,
         ...rest
@@ -46,6 +47,7 @@ const createadmin=async(payload:Partial<IUser>, file?: Express.Multer.File)=>{
     const hashedPassword=await bcryptjs.hash(password as string,Number(envVars.BCRYPT_SALT_ROUND))
     const user =await User.create({
         email,
+        role: 'ADMIN',
         password:hashedPassword,
         picture: profilePicture,
         ...rest
@@ -69,6 +71,7 @@ const createguide=async(payload:Partial<IUser>, file?: Express.Multer.File)=>{
     const hashedPassword=await bcryptjs.hash(password as string,Number(envVars.BCRYPT_SALT_ROUND))
     const user =await User.create({
         email,
+        role: 'GUIDE',
         password:hashedPassword,
         picture: profilePicture,
         ...rest
