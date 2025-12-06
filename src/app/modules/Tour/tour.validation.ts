@@ -21,5 +21,5 @@ export const updateTourZodSchema = z.object({
   meetingPoint: z.string().optional(),
   maxGroupSize: z.number().optional(),
   images: z.array(z.string()).optional(),
-  status: z.enum(['ACTIVE', 'INACTIVE']).optional(),
+  
 });

@@ -29,6 +29,6 @@ router.get('/:id', TourController.getTour);
 router.patch('/:id', fileUploader.upload.array('images', 8), validateRequest(updateTourZodSchema), TourController.updateTour);
 
 // Deactivate (soft delete) a tour (guide or admin)
-router.patch('/deactivate/:id', checkAuth(Role.GUIDE, Role.ADMIN), TourController.deactivateTour);
+router.patch('/deactivate/:id',  TourController.deactivateTour);
 
 export const TourRoutes = router;

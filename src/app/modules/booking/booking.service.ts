@@ -12,13 +12,13 @@ const createBooking = async (payload: Partial<IBooking>) => {
 };
 
 const getAllBookings = async () => {
-  const bookings = await Booking.find({ isDeleted: false }).populate(['traveler', 'guide', 'tour']);
+  const bookings = await Booking.find({ isDeleted: false }).populate(['tourist', 'guide', 'tour']);
   const total = await Booking.countDocuments({ isDeleted: false });
   return { data: bookings, meta: { total } };
 };
 
 const getBookingById = async (id: string) => {
-  const booking = await Booking.findById(id).populate(['traveler', 'guide', 'tour']);
+  const booking = await Booking.findById(id).populate(['tourist', 'guide', 'tour']);
   if (!booking || booking.isDeleted) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
@@ -49,7 +49,7 @@ const acceptBooking = async (id: string) => {
     id,
     { status: BookingStatus.CONFIRMED },
     { new: true }
-  ).populate(['traveler', 'guide', 'tour']);
+  ).populate(['tourist', 'guide', 'tour']);
   if (!booking) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
@@ -61,7 +61,7 @@ const declineBooking = async (id: string) => {
     id,
     { status: BookingStatus.CANCELLED },
     { new: true }
-  ).populate(['traveler', 'guide', 'tour']);
+  ).populate(['tourist', 'guide', 'tour']);
   if (!booking) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
@@ -73,7 +73,7 @@ const completeBooking = async (id: string) => {
     id,
     { status: BookingStatus.COMPLETED },
     { new: true }
-  ).populate(['traveler', 'guide', 'tour']);
+  ).populate(['tourist', 'guide', 'tour']);
   if (!booking) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
@@ -81,7 +81,7 @@ const completeBooking = async (id: string) => {
 };
 
 const updateBooking = async (id: string, payload: Partial<IBooking>) => {
-  const updated = await Booking.findByIdAndUpdate(id, payload, { new: true }).populate(['traveler', 'guide', 'tour']);
+  const updated = await Booking.findByIdAndUpdate(id, payload, { new: true }).populate(['tourist', 'guide', 'tour']);
   if (!updated) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
@@ -89,7 +89,7 @@ const updateBooking = async (id: string, payload: Partial<IBooking>) => {
 };
 
 const deleteBooking = async (id: string) => {
-  const booking = await Booking.findByIdAndUpdate(id, { isDeleted: true }, { new: true }).populate(['traveler', 'guide', 'tour']);
+  const booking = await Booking.findByIdAndUpdate(id, { isDeleted: true }, { new: true }).populate(['tourist', 'guide', 'tour']);
   if (!booking) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
