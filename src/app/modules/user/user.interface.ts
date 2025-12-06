@@ -27,6 +27,7 @@ export interface IUser {
     dailyrate?:number;
     travelpreferences?:string[];
     spokenLanguages?:string[];
+    wishlist?: Types.ObjectId[];
     isDeleted?: string;
     isActive?: IsActive;
     isVerified?: boolean;

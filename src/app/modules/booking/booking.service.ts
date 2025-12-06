@@ -8,7 +8,7 @@ const createBooking = async (payload: Partial<IBooking>) => {
     ...payload,
     status: BookingStatus.PENDING,
   });
-  return created.populate(['traveler', 'guide', 'tour']);
+  return { data: created };
 };
 
 const getAllBookings = async () => {
@@ -26,14 +26,21 @@ const getBookingById = async (id: string) => {
 };
 
 const getBookingsByTraveler = async (travelerId: string) => {
-  const bookings = await Booking.find({ traveler: travelerId, isDeleted: false }).populate(['guide', 'tour']);
-  const total = await Booking.countDocuments({ traveler: travelerId, isDeleted: false });
+  const bookings = await Booking.find({ tourist: travelerId, isDeleted: false }).populate(['guide', 'tour']);
+  const total = await Booking.countDocuments({ tourist: travelerId, isDeleted: false });
   return { data: bookings, meta: { total } };
 };
 
-const getBookingsByGuide = async (guideId: string) => {
-  const bookings = await Booking.find({ guide: guideId, isDeleted: false }).populate(['traveler', 'tour']);
-  const total = await Booking.countDocuments({ guide: guideId, isDeleted: false });
+const getBookingsByGuide = async (guideId: string, status?: string) => {
+  const query: any = { guide: guideId, isDeleted: false };
+
+  // Add status filter if provided
+  if (status) {
+    query.status = status;
+  }
+
+  const bookings = await Booking.find(query).populate(['tourist', 'tour']);
+  const total = await Booking.countDocuments(query);
   return { data: bookings, meta: { total } };
 };
 
@@ -81,6 +88,14 @@ const updateBooking = async (id: string, payload: Partial<IBooking>) => {
   return updated;
 };
 
+const deleteBooking = async (id: string) => {
+  const booking = await Booking.findByIdAndUpdate(id, { isDeleted: true }, { new: true }).populate(['traveler', 'guide', 'tour']);
+  if (!booking) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
+  }
+  return booking;
+};
+
 export const BookingService = {
   createBooking,
   getAllBookings,
@@ -91,4 +106,5 @@ export const BookingService = {
   declineBooking,
   completeBooking,
   updateBooking,
+  deleteBooking,
 };

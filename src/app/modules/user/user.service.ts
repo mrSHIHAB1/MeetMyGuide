@@ -102,11 +102,64 @@ const updateUser = async (id: string, payload: Partial<IUser>) => {
 return updatedUserr
 };
 
+const getUserById = async (id: string) => {
+    const user = await User.findById(id);
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    return user;
+};
+
+const deleteUser = async (id: string) => {
+    const user = await User.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    return user;
+};
+
+const addToWishlist = async (userId: string, tourId: string) => {
+    const user = await User.findByIdAndUpdate(
+        userId,
+        { $addToSet: { wishlist: tourId } },
+        { new: true }
+    ).populate('wishlist');
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    return user;
+};
+
+const removeFromWishlist = async (userId: string, tourId: string) => {
+    const user = await User.findByIdAndUpdate(
+        userId,
+        { $pull: { wishlist: tourId } },
+        { new: true }
+    ).populate('wishlist');
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    return user;
+};
+
+const getWishlist = async (userId: string) => {
+    const user = await User.findById(userId).populate('wishlist');
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    return user.wishlist || [];
+};
+
 export const UserServices={
-     getAllUsers,
+         getAllUsers,
    
-    createTourist,
-    createadmin,
-    createguide,
-      updateUser 
+     createTourist,
+     createadmin,
+     createguide,
+         updateUser,
+         getUserById,
+         deleteUser,
+         addToWishlist,
+         removeFromWishlist,
+         getWishlist
 }

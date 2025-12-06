@@ -1,12 +1,12 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose, { Schema, Types, model } from 'mongoose';
 import { IBooking, BookingStatus } from './booking.interface';
 
 const BookingSchema: Schema<IBooking> = new Schema(
   {
-    traveler: { type: String},
-    guide: { type: String},
-    tour: { type: String},
-    requestedDate: { type: Date, required: true },
+    tourist: { type: String, required: true },
+    guide: { type: String, required: true },
+    tour: { type: String, required: true },
+    requestedDate: { type: Date},
     requestedTime: { type: String },
     status: { type: String, enum: Object.values(BookingStatus), default: BookingStatus.PENDING },
     numberOfPeople: { type: Number },

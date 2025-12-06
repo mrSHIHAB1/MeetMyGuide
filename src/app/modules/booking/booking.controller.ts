@@ -36,59 +36,94 @@ const getBooking = catchAsync(async (req: Request, res: Response, next: NextFunc
   });
 });
 
-const getMyBookings = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const travelerEmail = (req.user as any)?.email;
-  if (!travelerEmail) {
+export const getMyBookings = catchAsync(async (req, res) => {
+  // Decode user from accessToken cookie
+  const accessToken = req.cookies?.accessToken;
+  if (!accessToken) {
     return sendResponse(res, {
       success: false,
       statusCode: httpStatus.UNAUTHORIZED,
-      message: 'Traveler email not found',
+      message: "Access token missing",
       data: null,
     });
   }
-  // Get traveler ID from email (you may optimize this with caching or direct ID storage in token)
-  const { User } = await import('../user/user.model');
-  const traveler = await User.findOne({ email: travelerEmail });
-  if (!traveler) {
+
+  let decoded: any;
+  try {
+    decoded = require("jsonwebtoken").verify(accessToken, process.env.JWT_ACCESS_SECRET);
+  } catch (err) {
     return sendResponse(res, {
       success: false,
-      statusCode: httpStatus.NOT_FOUND,
-      message: 'Traveler not found',
+      statusCode: httpStatus.UNAUTHORIZED,
+      message: "Invalid token",
       data: null,
     });
   }
-  const result = await BookingService.getBookingsByTraveler(traveler._id.toString());
-  sendResponse(res, {
+
+  const travelerId = decoded.userId || decoded.id; // depends on what your token uses
+  console.log("Decoded traveler ID:", travelerId);
+  if (!travelerId) {
+    return sendResponse(res, {
+      success: false,
+      statusCode: httpStatus.UNAUTHORIZED,
+      message: "Traveler ID not found in token",
+      data: null,
+    });
+  }
+
+  const result = await BookingService.getBookingsByTraveler(travelerId);
+
+  return sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: 'Your bookings retrieved',
+    message: "Bookings retrieved",
     data: result.data,
     meta: result.meta,
   });
 });
 
+
+
 const getGuideBookings = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const guideEmail = (req.user as any)?.email;
-  if (!guideEmail) {
+  // Decode user from accessToken cookie
+  const accessToken = req.cookies?.accessToken;
+  if (!accessToken) {
     return sendResponse(res, {
       success: false,
       statusCode: httpStatus.UNAUTHORIZED,
-      message: 'Guide email not found',
+      message: "Access token missing",
       data: null,
     });
   }
-  // Get guide ID from email
-  const { User } = await import('../user/user.model');
-  const guide = await User.findOne({ email: guideEmail });
-  if (!guide) {
+
+  let decoded: any;
+  try {
+    decoded = require("jsonwebtoken").verify(accessToken, process.env.JWT_ACCESS_SECRET);
+  } catch (err) {
     return sendResponse(res, {
       success: false,
-      statusCode: httpStatus.NOT_FOUND,
-      message: 'Guide not found',
+      statusCode: httpStatus.UNAUTHORIZED,
+      message: "Invalid token",
       data: null,
     });
   }
-  const result = await BookingService.getBookingsByGuide(guide._id.toString());
+
+  const guideId = decoded.userId || decoded.id;
+  console.log("Decoded guide ID:", guideId);
+  if (!guideId) {
+    return sendResponse(res, {
+      success: false,
+      statusCode: httpStatus.UNAUTHORIZED,
+      message: "Guide ID not found in token",
+      data: null,
+    });
+  }
+
+  // Get status filter from query params
+  const status = req.query.status as string | undefined;
+
+  const result = await BookingService.getBookingsByGuide(guideId, status);
+
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
@@ -142,6 +177,17 @@ const updateBooking = catchAsync(async (req: Request, res: Response, next: NextF
   });
 });
 
+const deleteBooking = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  const booking = await BookingService.deleteBooking(id);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Booking deleted (soft)',
+    data: booking,
+  });
+});
+
 export const BookingController = {
   createBooking,
   getAllBookings,
@@ -152,4 +198,5 @@ export const BookingController = {
   declineBooking,
   completeBooking,
   updateBooking,
+  deleteBooking,
 };

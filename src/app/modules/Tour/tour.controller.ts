@@ -59,11 +59,33 @@ const deactivateTour = catchAsync(async (req: Request, res: Response, next: Next
     data: tour,
   });
 });
+export const getAllToursByFilter = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Extract filter parameters from query string
+    const filters = {
+      destination: req.query.destination as string | undefined,
+      language: req.query.language as string | undefined,
+      category: req.query.category as string | undefined,
+      minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
+      maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
+    };
 
+    const result = await TourService.getAllToursByFilter(filters);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Tours retrieved successfully",
+      data: result.data,
+      meta: result.meta,
+    });
+  }
+);
 export const TourController = {
   createTour,
   getAllTours,
   getTour,
   updateTour,
   deactivateTour,
+  getAllToursByFilter,
 };

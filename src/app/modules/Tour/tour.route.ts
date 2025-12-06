@@ -19,6 +19,9 @@ router.post(
 // Get all tours
 router.get('/', TourController.getAllTours);
 
+// Get filtered tours
+router.get('/filter', TourController.getAllToursByFilter);
+
 // Get single tour
 router.get('/:id', TourController.getTour);
 

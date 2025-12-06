@@ -54,6 +54,78 @@ const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFun
         meta: result.meta
     })
 })
+const getUserById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const user = await UserServices.getUserById(id);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'User retrieved',
+        data: user,
+    });
+});
+
+const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const user = await UserServices.deleteUser(id);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'User deleted (soft)',
+        data: user,
+    });
+});
+
+const addToWishlist = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.params;
+    const { tourId } = req.body;
+    if (!tourId) {
+        return sendResponse(res, {
+            success: false,
+            statusCode: httpStatus.BAD_REQUEST,
+            message: 'Tour ID is required',
+            data: null,
+        });
+    }
+    const user = await UserServices.addToWishlist(userId, tourId);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'Tour added to wishlist',
+        data: user,
+    });
+});
+
+const removeFromWishlist = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.params;
+    const { tourId } = req.body;
+    if (!tourId) {
+        return sendResponse(res, {
+            success: false,
+            statusCode: httpStatus.BAD_REQUEST,
+            message: 'Tour ID is required',
+            data: null,
+        });
+    }
+    const user = await UserServices.removeFromWishlist(userId, tourId);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'Tour removed from wishlist',
+        data: user,
+    });
+});
+
+const getWishlist = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.params;
+    const wishlist = await UserServices.getWishlist(userId);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'Wishlist retrieved',
+        data: wishlist,
+    });
+});
 const Updatuser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
  const { id } = req.params; 
   const result = await UserServices. updateUser(id, req.body);
@@ -69,5 +141,10 @@ export const UserControllers={
     createTourist,
     createAdmin,
     createGuide,
-    Updatuser 
+    Updatuser,
+    getUserById,
+    deleteUser,
+    addToWishlist,
+    removeFromWishlist,
+    getWishlist
 }

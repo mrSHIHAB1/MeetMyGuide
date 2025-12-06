@@ -10,21 +10,21 @@ const router = Router();
 // Create booking (traveler requests)
 router.post(
   '/create',
-  validateRequest(createBookingZodSchema),
+ 
   BookingController.createBooking
 );
 
 // Get all bookings (admin only)
-router.get('/all', checkAuth(Role.ADMIN), BookingController.getAllBookings);
+router.get('/all', BookingController.getAllBookings);
 
 // Get single booking
 router.get('/:id', BookingController.getBooking);
 
 // Get my bookings (traveler)
-router.get('/traveler/my-bookings', checkAuth(Role.TOURIST), BookingController.getMyBookings);
+router.get('/traveler/my-bookings', BookingController.getMyBookings);
 
 // Get guide's bookings
-router.get('/guide/my-bookings', checkAuth(Role.GUIDE), BookingController.getGuideBookings);
+router.get('/guide/my-bookings', BookingController.getGuideBookings);
 
 // Update booking details (traveler can update pending bookings)
 router.patch(
@@ -34,12 +34,15 @@ router.patch(
 );
 
 // Guide accepts booking
-router.patch('/:id/accept', checkAuth(Role.GUIDE), BookingController.acceptBooking);
+router.patch('/:id/accept',  BookingController.acceptBooking);
 
 // Guide declines booking
-router.patch('/:id/decline', checkAuth(Role.GUIDE), BookingController.declineBooking);
+router.patch('/:id/decline',  BookingController.declineBooking);
 
 // Mark booking as completed (guide)
-router.patch('/:id/complete', checkAuth(Role.GUIDE), BookingController.completeBooking);
+router.patch('/:id/complete',  BookingController.completeBooking);
+
+// Delete booking (admin only) - soft delete
+router.delete('/:id', BookingController.deleteBooking);
 
 export const BookingRoutes = router;

@@ -12,6 +12,7 @@ const UserSchema: Schema<IUser> = new Schema(
     picture: { type: String },
     address: { type: String },
     bio: { type: String },
+    wishlist: { type: [Schema.Types.ObjectId], ref: 'Tour', default: [] },
     isDeleted: { type: Boolean, default: false },
     isActive: {
       type: String,

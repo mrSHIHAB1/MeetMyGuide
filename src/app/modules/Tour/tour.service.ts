@@ -4,6 +4,7 @@ import httpStatus from 'http-status-codes';
 import AppError from '../../errorHelpers/AppError';
 import { fileUploader } from '../../helpers/fileUpload';
 import { Types } from 'mongoose';
+import { get } from 'http';
 
 const createTour = async (payload: Partial<ITour>, files?: Express.Multer.File[]) => {
   // If files are provided, upload each to Cloudinary and collect URLs
@@ -33,6 +34,63 @@ export const getAllTours = async () => {
   }));
 
   return { data: toursWithStringIds, meta: { total } };
+};
+export interface TourFilters {
+  destination?: string;
+  language?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+}
+// services/tour.service.ts
+
+
+export const getAllToursByFilter = async (filters?: TourFilters) => {
+  const query: any = { isDeleted: false };
+
+  // Destination: partial match (e.g. "Par" matches "Paris")
+  if (filters?.destination) {
+    query.destination = { $regex: filters.destination, $options: "i" };
+  }
+
+  // Language: exact match but case-insensitive
+  if (filters?.language) {
+    query.language = { $regex: `^${filters.language}$`, $options: "i" };
+  }
+
+  // Category: exact match
+  if (filters?.category) {
+    query.category = filters.category;
+  }
+
+  // Price range
+  if (filters?.minPrice !== undefined || filters?.maxPrice !== undefined) {
+    query.fee = {};
+    if (filters.minPrice !== undefined) {
+      query.fee.$gte = filters.minPrice;
+    }
+    if (filters.maxPrice !== undefined) {
+      query.fee.$lte = filters.maxPrice;
+    }
+  }
+
+  // Fetch results
+  const tours = await Tour.find(query).lean();
+  const total = await Tour.countDocuments(query);
+
+  // Convert ObjectId → string for frontend safety
+  const formattedTours = tours.map((t) => ({
+    ...t,
+    _id: t._id.toString(),
+    guide: t.guide?.toString(),
+    createdAt: t.createdAt?.toISOString(),
+    updatedAt: t.updatedAt?.toISOString(),
+  }));
+
+  return {
+    data: formattedTours,
+    meta: { total },
+  };
 };
 
 /**
@@ -92,4 +150,5 @@ export const TourService = {
   getTourById,
   updateTour,
   deactivateTour,
+  getAllToursByFilter,
 };
