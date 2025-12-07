@@ -6,6 +6,11 @@ export enum BookingStatus {
   COMPLETED = 'COMPLETED',
   CANCELLED = 'CANCELLED',
 }
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  FAILED = 'FAILED',
+}
 
 export interface IBooking {
   _id?: Types.ObjectId;
@@ -20,4 +25,5 @@ export interface IBooking {
   isDeleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  paymentStatus?: PaymentStatus;
 }

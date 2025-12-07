@@ -17,6 +17,9 @@ interface EnvConfig {
         api_secret?: string,
         cloud_name?: string
     }
+   STRIPE_SECRET_KEY?: string
+   APP_PASS?:string
+   STRIPE_WEBHOOK_SECRET?: string
 }
 const loadEnvVariables = (): EnvConfig => {
     const requiredEnvVariables: string[] = ["PORT", "DB_URL","NODE_ENV","BCRYPT_SALT_ROUND", "JWT_ACCESS_EXPIRES", "JWT_ACCESS_SECRET", "EXPRESS_SESSION_SECRET"];
@@ -43,7 +46,9 @@ const loadEnvVariables = (): EnvConfig => {
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
         api_key: process.env.CLOUDINARY_API_KEY
     },
-
+   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+   APP_PASS: process.env.APP_PASS,
+   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET
     }
 }
 

@@ -6,6 +6,7 @@ export const createBookingZodSchema = z.object({
   tour: z.string({ error: 'Tour ID is required' }),
   requestedDate: z.string({ error: 'Requested date is required' }),
   requestedTime: z.string().optional(),
+  paymentStatus: z.enum(['PENDING', 'PAID', 'FAILED']).optional(),
   numberOfPeople: z.number().optional(),
   specialRequests: z.string().optional(),
 });
@@ -15,6 +16,7 @@ export const updateBookingZodSchema = z.object({
   requestedTime: z.string().optional(),
   numberOfPeople: z.number().optional(),
   specialRequests: z.string().optional(),
+  paymentStatus: z.enum(['PENDING', 'PAID', 'FAILED']).optional(),
 });
 
 export const statusUpdateZodSchema = z.object({
