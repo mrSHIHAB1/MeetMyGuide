@@ -12,13 +12,19 @@ const createBooking = async (payload: Partial<IBooking>) => {
 };
 
 const getAllBookings = async () => {
-  const bookings = await Booking.find({ isDeleted: false }).populate(['tourist', 'guide', 'tour']);
+  const bookings = await Booking.find({ isDeleted: false })
+    .populate('tourist', 'name email phone')
+    .populate('guide', 'name email phone')
+    .populate('tour', 'title price');
   const total = await Booking.countDocuments({ isDeleted: false });
   return { data: bookings, meta: { total } };
 };
 
 const getBookingById = async (id: string) => {
-  const booking = await Booking.findById(id).populate(['tourist', 'guide', 'tour']);
+  const booking = await Booking.findById(id)
+    .populate('tourist', 'name email phone')
+    .populate('guide', 'name email phone')
+    .populate('tour', 'title price');
   if (!booking || booking.isDeleted) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
@@ -26,7 +32,9 @@ const getBookingById = async (id: string) => {
 };
 
 const getBookingsByTraveler = async (travelerId: string) => {
-  const bookings = await Booking.find({ tourist: travelerId, isDeleted: false }).populate(['guide', 'tour']);
+  const bookings = await Booking.find({ tourist: travelerId, isDeleted: false })
+    .populate('guide', 'name email phone')
+    .populate('tour', 'title price');
   const total = await Booking.countDocuments({ tourist: travelerId, isDeleted: false });
   return { data: bookings, meta: { total } };
 };
@@ -39,7 +47,9 @@ const getBookingsByGuide = async (guideId: string, status?: string) => {
     query.status = status;
   }
 
-  const bookings = await Booking.find(query).populate(['tourist', 'tour']);
+  const bookings = await Booking.find(query)
+    .populate('tourist', 'name email phone')
+    .populate('tour', 'title price');
   const total = await Booking.countDocuments(query);
   return { data: bookings, meta: { total } };
 };
@@ -49,7 +59,10 @@ const acceptBooking = async (id: string) => {
     id,
     { status: BookingStatus.CONFIRMED },
     { new: true }
-  ).populate(['tourist', 'guide', 'tour']);
+  )
+    .populate('tourist', 'name email phone')
+    .populate('guide', 'name email phone')
+    .populate('tour', 'title price');
   if (!booking) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
@@ -61,7 +74,10 @@ const declineBooking = async (id: string) => {
     id,
     { status: BookingStatus.CANCELLED },
     { new: true }
-  ).populate(['tourist', 'guide', 'tour']);
+  )
+    .populate('tourist', 'name email phone')
+    .populate('guide', 'name email phone')
+    .populate('tour', 'title price');
   if (!booking) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
@@ -73,7 +89,10 @@ const completeBooking = async (id: string) => {
     id,
     { status: BookingStatus.COMPLETED },
     { new: true }
-  ).populate(['tourist', 'guide', 'tour']);
+  )
+    .populate('tourist', 'name email phone')
+    .populate('guide', 'name email phone')
+    .populate('tour', 'title price');
   if (!booking) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
@@ -81,7 +100,10 @@ const completeBooking = async (id: string) => {
 };
 
 const updateBooking = async (id: string, payload: Partial<IBooking>) => {
-  const updated = await Booking.findByIdAndUpdate(id, payload, { new: true }).populate(['tourist', 'guide', 'tour']);
+  const updated = await Booking.findByIdAndUpdate(id, payload, { new: true })
+    .populate('tourist', 'name email phone')
+    .populate('guide', 'name email phone')
+    .populate('tour', 'title price');
   if (!updated) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }
@@ -89,7 +111,10 @@ const updateBooking = async (id: string, payload: Partial<IBooking>) => {
 };
 
 const deleteBooking = async (id: string) => {
-  const booking = await Booking.findByIdAndUpdate(id, { isDeleted: true }, { new: true }).populate(['tourist', 'guide', 'tour']);
+  const booking = await Booking.findByIdAndUpdate(id, { isDeleted: true }, { new: true })
+    .populate('tourist', 'name email phone')
+    .populate('guide', 'name email phone')
+    .populate('tour', 'title price');
   if (!booking) {
     throw new AppError(httpStatus.NOT_FOUND, 'Booking not found');
   }

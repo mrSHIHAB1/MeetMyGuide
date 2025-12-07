@@ -66,6 +66,8 @@ export const getAllToursByFilter = catchAsync(
       destination: req.query.destination as string | undefined,
       language: req.query.language as string | undefined,
       category: req.query.category as string | undefined,
+      status: req.query.status as string | undefined,
+      searchTerm: req.query.searchTerm as string | undefined,
       minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
     };

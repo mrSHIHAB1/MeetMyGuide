@@ -3,10 +3,10 @@ import { IBooking, BookingStatus } from './booking.interface';
 
 const BookingSchema: Schema<IBooking> = new Schema(
   {
-    tourist: { type: String, required: true },
-    guide: { type: String, required: true },
-    tour: { type: String, required: true },
-    requestedDate: { type: Date},
+    tourist: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    guide: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    tour: { type: Schema.Types.ObjectId, ref: 'Tour', required: true },
+    requestedDate: { type: Date },
     requestedTime: { type: String },
     status: { type: String, enum: Object.values(BookingStatus), default: BookingStatus.PENDING },
     numberOfPeople: { type: Number },

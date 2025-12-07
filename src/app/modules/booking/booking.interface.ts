@@ -9,9 +9,9 @@ export enum BookingStatus {
 
 export interface IBooking {
   _id?: Types.ObjectId;
-  tourist: string; // reference to User (traveler)
-  guide: string; // reference to User (guide)
-  tour: string; // reference to Tour
+  tourist: Types.ObjectId; // reference to User (traveler)
+  guide: Types.ObjectId; // reference to User (guide)
+  tour: Types.ObjectId; // reference to Tour
   requestedDate: Date;
   requestedTime?: string; // e.g., "14:30"
   status: BookingStatus;

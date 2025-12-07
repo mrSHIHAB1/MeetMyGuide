@@ -6,49 +6,56 @@ import httpStatus from "http-status-codes";
 
 
 
-const createTourist=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
-     
-    const user= await UserServices.createTourist(req.body, req.file);
-   
-    sendResponse(res,{
-        success:true,
-        statusCode:httpStatus.CREATED,
-        message:"User Created Successfully",
-        data:user
+const createTourist = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = await UserServices.createTourist(req.body, req.file);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.CREATED,
+        message: "User Created Successfully",
+        data: user
     })
 })
-const createAdmin=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
-     
-    const user= await UserServices.createadmin(req.body, req.file);
-   
-    sendResponse(res,{
-        success:true,
-        statusCode:httpStatus.CREATED,
-        message:"User Created Successfully",
-        data:user
+const createAdmin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = await UserServices.createadmin(req.body, req.file);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.CREATED,
+        message: "User Created Successfully",
+        data: user
     })
 })
 
-const createGuide=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
-     
-    const user= await UserServices.createguide(req.body, req.file);
-   
-    sendResponse(res,{
-        success:true,
-        statusCode:httpStatus.CREATED,
-        message:"User Created Successfully",
-        data:user
+const createGuide = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = await UserServices.createguide(req.body, req.file);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.CREATED,
+        message: "User Created Successfully",
+        data: user
     })
 })
 
 
 const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const result = await UserServices.getAllUsers();
+    // Extract filter parameters from query
+    const filters = {
+        role: req.query.role as string | undefined,
+        email: req.query.email as string | undefined,
+        contactNumber: req.query.contactNumber as string | undefined,
+        searchTerm: req.query.searchTerm as string | undefined,
+    };
 
-   
+    const result = await UserServices.getAllUsers(filters);
+
     sendResponse(res, {
         success: true,
-        statusCode: httpStatus.CREATED,
+        statusCode: httpStatus.OK,
         message: "All Users Retrieved Successfully",
         data: result.data,
         meta: result.meta
@@ -127,17 +134,17 @@ const getWishlist = catchAsync(async (req: Request, res: Response, next: NextFun
     });
 });
 const Updatuser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
- const { id } = req.params; 
-  const result = await UserServices. updateUser(id, req.body);
-sendResponse(res,{
-        success:true,
-        statusCode:httpStatus.CREATED,
-        message:"Updated user Successfully",
-        data:result
+    const { id } = req.params;
+    const result = await UserServices.updateUser(id, req.body);
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.CREATED,
+        message: "Updated user Successfully",
+        data: result
     })
 })
-export const UserControllers={
-        getAllUsers,
+export const UserControllers = {
+    getAllUsers,
     createTourist,
     createAdmin,
     createGuide,

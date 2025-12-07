@@ -12,7 +12,7 @@ const router = Router();
 router.post(
 	'/create',
 	fileUploader.upload.array('images', 8),
-	// validateRequest(createTourZodSchema),
+	validateRequest(createTourZodSchema),
 	TourController.createTour
 );
 
@@ -29,6 +29,6 @@ router.get('/:id', TourController.getTour);
 router.patch('/:id', fileUploader.upload.array('images', 8), validateRequest(updateTourZodSchema), TourController.updateTour);
 
 // Deactivate (soft delete) a tour (guide or admin)
-router.patch('/deactivate/:id',  TourController.deactivateTour);
+router.patch('/deactivate/:id', TourController.deactivateTour);
 
 export const TourRoutes = router;

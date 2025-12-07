@@ -41,6 +41,8 @@ export interface TourFilters {
   category?: string;
   minPrice?: number;
   maxPrice?: number;
+  status?: string;
+  searchTerm?: string;
 }
 // services/tour.service.ts
 
@@ -61,6 +63,20 @@ export const getAllToursByFilter = async (filters?: TourFilters) => {
   // Category: exact match
   if (filters?.category) {
     query.category = filters.category;
+  }
+
+  // Status: exact match
+  if (filters?.status) {
+    query.status = filters.status;
+  }
+
+  // Search term: searches across title, description, destination
+  if (filters?.searchTerm) {
+    query.$or = [
+      { title: { $regex: filters.searchTerm, $options: 'i' } },
+      { description: { $regex: filters.searchTerm, $options: 'i' } },
+      { destination: { $regex: filters.searchTerm, $options: 'i' } }
+    ];
   }
 
   // Price range

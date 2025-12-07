@@ -42,8 +42,8 @@ router.post("/register/guide",fileUploader.upload.single('file'),
 })
 router.get("/all-users", UserControllers.getAllUsers)
 router.get('/:id',  UserControllers.getUserById)
-router.delete('/:id', checkAuth(Role.ADMIN), UserControllers.deleteUser)
-router.patch("/updateUsers/:id",validateRequest(updateZodSchema),checkAuth(Role.ADMIN),UserControllers.Updatuser)
+router.delete('/:id',  UserControllers.deleteUser)
+router.patch("/updateUsers/:id",validateRequest(updateZodSchema),UserControllers.Updatuser)
 
 // Wishlist routes
 router.post('/:userId/wishlist/add', UserControllers.addToWishlist)
