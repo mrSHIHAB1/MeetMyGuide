@@ -121,6 +121,15 @@ const deleteBooking = async (id: string) => {
   return booking;
 };
 
+const getBookingsByTour = async (tourId: string) => {
+  const bookings = await Booking.find({ tour: tourId, isDeleted: false })
+    .populate('tourist', 'name email phone')
+    .populate('guide', 'name email phone')
+    .populate('tour', 'title price');
+  const total = await Booking.countDocuments({ tour: tourId, isDeleted: false });
+  return { data: bookings, meta: { total } };
+};
+
 export const BookingService = {
   createBooking,
   getAllBookings,
@@ -132,4 +141,5 @@ export const BookingService = {
   completeBooking,
   updateBooking,
   deleteBooking,
+  getBookingsByTour,
 };

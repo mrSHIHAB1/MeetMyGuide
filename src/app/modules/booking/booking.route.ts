@@ -23,13 +23,15 @@ router.get('/:id', BookingController.getBooking);
 // Get my bookings (traveler)
 router.get('/traveler/my-bookings', BookingController.getMyBookings);
 
+// Get bookings by tour id
+router.get('/tour/:tourId', BookingController.getBookingsByTourId);
+
 // Get guide's bookings
 router.get('/guide/my-bookings', BookingController.getGuideBookings);
 
 // Update booking details (traveler can update pending bookings)
 router.patch(
   '/:id/update',
-  validateRequest(updateBookingZodSchema),
   BookingController.updateBooking
 );
 

@@ -160,6 +160,68 @@ const deactivateTour = async (id: string) => {
   return tour;
 };
 
+const getFilteredToursByGuide = async (guideId: string, filters?: TourFilters) => {
+  const query: any = { isDeleted: false, guide: guideId };
+
+  // Destination: partial match (e.g. "Par" matches "Paris")
+  if (filters?.destination) {
+    query.destination = { $regex: filters.destination, $options: "i" };
+  }
+
+  // Language: exact match but case-insensitive
+  if (filters?.language) {
+    query.language = { $regex: `^${filters.language}$`, $options: "i" };
+  }
+
+  // Category: exact match
+  if (filters?.category) {
+    query.category = filters.category;
+  }
+
+  // Status: exact match
+  if (filters?.status) {
+    query.status = filters.status;
+  }
+
+  // Search term: searches across title, description, destination
+  if (filters?.searchTerm) {
+    query.$or = [
+      { title: { $regex: filters.searchTerm, $options: 'i' } },
+      { description: { $regex: filters.searchTerm, $options: 'i' } },
+      { destination: { $regex: filters.searchTerm, $options: 'i' } }
+    ];
+  }
+
+  // Price range
+  if (filters?.minPrice !== undefined || filters?.maxPrice !== undefined) {
+    query.fee = {};
+    if (filters.minPrice !== undefined) {
+      query.fee.$gte = filters.minPrice;
+    }
+    if (filters.maxPrice !== undefined) {
+      query.fee.$lte = filters.maxPrice;
+    }
+  }
+
+  // Fetch results
+  const tours = await Tour.find(query).lean();
+  const total = await Tour.countDocuments(query);
+
+  // Convert ObjectId → string for frontend safety
+  const formattedTours = tours.map((t) => ({
+    ...t,
+    _id: t._id.toString(),
+    guide: t.guide?.toString(),
+    createdAt: t.createdAt?.toISOString(),
+    updatedAt: t.updatedAt?.toISOString(),
+  }));
+
+  return {
+    data: formattedTours,
+    meta: { total },
+  };
+};
+
 export const TourService = {
   createTour,
   getAllTours,
@@ -167,4 +229,5 @@ export const TourService = {
   updateTour,
   deactivateTour,
   getAllToursByFilter,
+  getFilteredToursByGuide,
 };

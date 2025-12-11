@@ -6,6 +6,7 @@ import httpStatus from 'http-status-codes';
 
 const createBooking = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const booking = await BookingService.createBooking(req.body);
+ console.log("Created booking:", booking);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.CREATED,
@@ -188,6 +189,18 @@ const deleteBooking = catchAsync(async (req: Request, res: Response, next: NextF
   });
 });
 
+const getBookingsByTourId = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { tourId } = req.params;
+  const result = await BookingService.getBookingsByTour(tourId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Bookings for tour retrieved',
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
 export const BookingController = {
   createBooking,
   getAllBookings,
@@ -199,4 +212,5 @@ export const BookingController = {
   completeBooking,
   updateBooking,
   deleteBooking,
+  getBookingsByTourId,
 };

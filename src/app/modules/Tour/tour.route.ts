@@ -19,8 +19,11 @@ router.post(
 // Get all tours
 router.get('/', TourController.getAllTours);
 
-// Get filtered tours
+// Get filtered tours (all tours)
 router.get('/filter', TourController.getAllToursByFilter);
+
+// Get filtered tours by guide from token
+router.get('/filter/guide',  TourController.getFilteredToursByGuide);
 
 // Get single tour
 router.get('/:id', TourController.getTour);

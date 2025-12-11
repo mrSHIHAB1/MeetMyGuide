@@ -1,12 +1,13 @@
 import mongoose, { Schema, Types, model } from 'mongoose';
 import { IBooking, BookingStatus, PaymentStatus } from './booking.interface';
+import { string } from 'zod/v4/classic/coerce.cjs';
 
 const BookingSchema: Schema<IBooking> = new Schema(
   {
     tourist: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     guide: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     tour: { type: Schema.Types.ObjectId, ref: 'Tour', required: true },
-    requestedDate: { type: Date },
+    requestedDate: { type: String },
     requestedTime: { type: String },
     status: { type: String, enum: Object.values(BookingStatus), default: BookingStatus.PENDING },
     numberOfPeople: { type: Number },
