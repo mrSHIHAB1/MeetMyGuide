@@ -1,6 +1,6 @@
 # 🗺️ Local Guide Platform
 
-[Live Demo]([https://your-live-url.com](https://meet-my-guide-frontend.vercel.app/))  
+[Live Demo]([(https://meet-my-guide-frontend.vercel.app/))  
 
 Local Guide Platform connects travelers with passionate local experts who can offer authentic, personalized experiences. Travelers can explore hidden gems, cultural hotspots, and unique activities, while locals can monetize their knowledge and skills.
 
@@ -42,12 +42,12 @@ This platform empowers locals to share their city’s hidden gems and culture, w
 | Category       | Technologies                               |
 |----------------|--------------------------------------------|
 | Frontend       | Next.js, Tailwind CSS                       |
-| Backend        | Node.js, Express.js, Prisma / Mongoose     |
-| Database       | PostgreSQL / MongoDB                        |
+| Backend        | Node.js, Express.js, Mongoose     |
+| Database       | MongoDB                        |
 | Authentication | JWT                                         |
-| Payment        | Stripe / SSLCommerz / Other Gateway        |
-| Deployment     | Vercel, Render, Railway                     |
-| Others         | Cloudinary, ImgBB, Other npm packages      |
+| Payment        | Stripe       |
+| Deployment     | Vercel, Render                  |
+| Others         | Cloudinary, Other npm packages      |
 
 ---
 
@@ -65,4 +65,6 @@ git clone https://github.com/your-username/local-guide-platform.git
 cd local-guide-platform
 npm install
 # or
-yarn install
+yarn install```
+Setup .env file
+ npm run dev
