@@ -11,7 +11,7 @@ const router = Router();
 // Create a tour listing (guide or admin) with multiple images upload
 router.post(
 	'/create',
-	fileUploader.upload.array('images', 8),
+	fileUploader.upload.array('images', 8),checkAuth(Role.ADMIN ,Role.GUIDE),
 	validateRequest(createTourZodSchema),
 	TourController.createTour
 );

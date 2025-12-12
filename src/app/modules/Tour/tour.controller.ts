@@ -55,7 +55,7 @@ const deactivateTour = catchAsync(async (req: Request, res: Response, next: Next
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
-    message: 'Tour deactivated',
+    message: 'Tour Deleted',
     data: tour,
   });
 });
