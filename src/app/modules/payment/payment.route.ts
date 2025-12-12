@@ -7,11 +7,7 @@ import bodyParser from 'body-parser';
 const router = Router();
 
 // Webhook route must come first and use raw body (not parsed JSON)
-router.post(
-  '/webhook',
-  raw({ type: 'application/json' }),
-  PaymentController.handleWebhook
-);
+
 
 // Create checkout session
 router.post(

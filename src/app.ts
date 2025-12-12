@@ -8,6 +8,7 @@ import "./app/config/passport";
 import expressSession from "express-session";
 import { globalErrorHandler } from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
+import { PaymentController } from './app/modules/payment/payment.controller';
 const app=express();
 
 app.use(expressSession({
@@ -19,7 +20,15 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(cookieParser())
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin:['http://localhost:3000', 'https://meet-my-guide-frontend.vercel.app'],
+    credentials:true,
+}))
+router.post(
+  '/webhook',
+  express.raw({ type: 'application/json' }),
+  PaymentController.handleWebhook
+);
 
 app.use("/api/v1",router)
 app.get('/',(req:Request,res:Response)=>{
