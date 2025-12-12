@@ -1,3 +1,3 @@
 set -o errexit
-npm intall
+npm install
 npm run build
