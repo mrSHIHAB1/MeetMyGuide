@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { catchAsync } from '../../utils/catchAsync';
-import { BookingService } from './booking.service';
+import { BookingService, getFilteredBookingsService } from './booking.service';
 import { sendResponse } from '../../utils/sendResponse';
 import httpStatus from 'http-status-codes';
 
@@ -200,7 +200,33 @@ const getBookingsByTourId = catchAsync(async (req: Request, res: Response, next:
     meta: result.meta,
   });
 });
+export const getFilteredBookings = async (req: Request, res: Response) => {
+  try {
+    // Extract filters from query params
+    const { status, searchTerm, guideId, touristId } = req.query;
 
+    const filters: any = {};
+    if (status) filters.status = status;
+    if (searchTerm) filters.searchTerm = searchTerm;
+    if (guideId) filters.guideId = guideId;
+    if (touristId) filters.touristId = touristId;
+
+    const result = await getFilteredBookingsService(filters);
+
+    res.status(200).json({
+      success: true,
+      message: "Filtered bookings retrieved",
+      data: result.data,
+      meta: result.meta,
+    });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch filtered bookings",
+    });
+  }
+};
 export const BookingController = {
   createBooking,
   getAllBookings,
@@ -213,4 +239,5 @@ export const BookingController = {
   updateBooking,
   deleteBooking,
   getBookingsByTourId,
+  getFilteredBookings
 };

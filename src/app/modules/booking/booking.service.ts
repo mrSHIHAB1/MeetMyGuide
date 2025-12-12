@@ -129,7 +129,31 @@ const getBookingsByTour = async (tourId: string) => {
   const total = await Booking.countDocuments({ tour: tourId, isDeleted: false });
   return { data: bookings, meta: { total } };
 };
+export const getFilteredBookingsService = async (filters?: Record<string, any>) => {
+  const query: any = { isDeleted: false };
 
+  // Apply filters
+  if (filters?.status) query.status = filters.status;
+  if (filters?.guideId) query.guide = filters.guideId;
+  if (filters?.touristId) query.tourist = filters.touristId;
+
+  // Search by tourist name or tour title
+  if (filters?.searchTerm) {
+    query.$or = [
+      { 'tour.title': { $regex: filters.searchTerm, $options: 'i' } },
+      { 'tourist.name': { $regex: filters.searchTerm, $options: 'i' } },
+    ];
+  }
+
+  const bookings = await Booking.find(query)
+    .populate("tourist", "name email phone")
+    .populate("guide", "name email phone")
+    .populate("tour", "title fee");
+
+  const total = await Booking.countDocuments(query);
+
+  return { data: bookings, meta: { total } };
+};
 export const BookingService = {
   createBooking,
   getAllBookings,
@@ -142,4 +166,5 @@ export const BookingService = {
   updateBooking,
   deleteBooking,
   getBookingsByTour,
+  getFilteredBookingsService 
 };

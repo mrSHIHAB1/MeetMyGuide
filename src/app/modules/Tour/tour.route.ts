@@ -29,7 +29,7 @@ router.get('/filter/guide',  TourController.getFilteredToursByGuide);
 router.get('/:id', TourController.getTour);
 
 // Update tour (guide or admin)
-router.patch('/:id', fileUploader.upload.array('images', 8), validateRequest(updateTourZodSchema), TourController.updateTour);
+router.patch('/:id', fileUploader.upload.array('images', 8),checkAuth(Role.ADMIN), validateRequest(updateTourZodSchema), TourController.updateTour);
 
 // Deactivate (soft delete) a tour (guide or admin)
 router.patch('/deactivate/:id', TourController.deactivateTour);

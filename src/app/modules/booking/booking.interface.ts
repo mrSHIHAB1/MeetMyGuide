@@ -17,9 +17,10 @@ export interface IBooking {
   tourist: Types.ObjectId; // reference to User (traveler)
   guide: Types.ObjectId; // reference to User (guide)
   tour: Types.ObjectId; // reference to Tour
-  requestedDate: Date;
+  requestedDate: string; // e.g., "2024-12-31"
   requestedTime?: string; // e.g., "14:30"
   status: BookingStatus;
+  
   numberOfPeople?: number;
   specialRequests?: string;
   isDeleted?: boolean;
