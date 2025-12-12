@@ -10,7 +10,7 @@ passport.use(
     new LocalStrategy({
         usernameField: "email",
         passwordField: "password"
-    }, async (email: string, password: string, done) => {
+    }, async (email: string, password: string, done:any) => {
         try {
             const isUserExist = await User.findOne({ email })
 
