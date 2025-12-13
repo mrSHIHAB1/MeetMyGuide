@@ -1,10 +1,9 @@
 import { Router } from 'express';
-import { BookingController, } from './booking.controller';
+import { BookingController, getFilteredBookings } from './booking.controller';
 import { validateRequest } from '../../middlewares/validateRequest';
 import { checkAuth } from '../../middlewares/checkAuth';
 import { createBookingZodSchema, updateBookingZodSchema, statusUpdateZodSchema } from './booking.validation';
 import { Role } from '../user/user.interface';
-import { getFilteredBookingsService } from './booking.service';
 
 const router = Router();
 
@@ -14,7 +13,7 @@ router.post(
  
   BookingController.createBooking
 );
-router.get("/filtered", getFilteredBookingsService);
+router.get("/filtered", getFilteredBookings);
 // Get all bookings (admin only)
 router.get('/all', BookingController.getAllBookings);
 

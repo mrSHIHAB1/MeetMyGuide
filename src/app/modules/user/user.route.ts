@@ -10,7 +10,7 @@ const router =express.Router();
 
 router.post(
   "/register/tourist",
-  fileUploader.upload.single('file'),checkAuth(Role.ADMIN ,Role.GUIDE ,Role.TOURIST),
+  fileUploader.upload.single('file'),
   (req: Request, res: Response, next: NextFunction) => {
 
     req.body = userValidation.createTouristZodSchema.parse(
@@ -32,7 +32,7 @@ router.post("/register/admin",
 
     
   
-router.post("/register/guide",fileUploader.upload.single('file'), checkAuth(Role.ADMIN ,Role.GUIDE),
+router.post("/register/guide",fileUploader.upload.single('file'), 
 (req: Request, res: Response, next: NextFunction)=> {
    req.body=userValidation.createGuideZodSchema.parse(
       JSON.parse(req.body.data)
