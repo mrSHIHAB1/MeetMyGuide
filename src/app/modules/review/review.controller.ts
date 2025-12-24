@@ -78,8 +78,17 @@ const deleteReview = catchAsync(async (req: Request, res: Response, next: NextFu
   const deleted = await ReviewService.deleteReview(id);
   sendResponse(res, { success: true, statusCode: httpStatus.OK, message: 'Review deleted', data: deleted });
 });
-
+const FeaturedGuides =catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const guides = await ReviewService.getFeaturedGuides();
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: 'Featured guides retrieved',
+        data: guides,
+    });
+});
 export const ReviewController = {
+   FeaturedGuides,
   createReview,
   getReview,
   getReviewsByGuide,

@@ -50,4 +50,6 @@ router.post('/:userId/wishlist/add', UserControllers.addToWishlist)
 router.delete('/:userId/wishlist/remove', UserControllers.removeFromWishlist)
 router.get('/:userId/wishlist', UserControllers.getWishlist)
 
+
+
 export const UserRoutes=router;

@@ -14,11 +14,11 @@ export enum PaymentStatus {
 
 export interface IBooking {
   _id?: Types.ObjectId;
-  tourist: Types.ObjectId; // reference to User (traveler)
-  guide: Types.ObjectId; // reference to User (guide)
-  tour: Types.ObjectId; // reference to Tour
-  requestedDate: string; // e.g., "2024-12-31"
-  requestedTime?: string; // e.g., "14:30"
+  tourist: Types.ObjectId; 
+  guide: Types.ObjectId; 
+  tour: Types.ObjectId;
+  requestedDate: string;
+  requestedTime?: string; 
   status: BookingStatus;
   
   numberOfPeople?: number;

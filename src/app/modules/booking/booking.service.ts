@@ -154,7 +154,40 @@ export const getFilteredBookingsService = async (filters?: Record<string, any>) 
 
   return { data: bookings, meta: { total } };
 };
+const getMostBookedTours = async () => {
+  const result = await Booking.aggregate([
+    {
+      $match: {
+        isDeleted: false,
+        status: "CONFIRMED" // or "ACTIVE"
+      }
+    },
+    {
+      $group: {
+        _id: "$tour",              // group by tour
+        totalBookings: { $sum: 1 } // count bookings
+      }
+    },
+    {
+      $sort: { totalBookings: -1 }
+    },
+    {
+      $limit: 5 // top 5 tours
+    },
+    {
+      $project: {
+        _id: 0,
+        tour: "$_id",
+        totalBookings: 1
+      }
+    }
+  ]);
+
+  return result;
+};
+
 export const BookingService = {
+  getMostBookedTours,
   createBooking,
   getAllBookings,
   getBookingById,

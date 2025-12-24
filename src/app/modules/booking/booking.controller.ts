@@ -226,7 +226,16 @@ const getBookingsByTourId = catchAsync(async (req: Request, res: Response, next:
     meta: result.meta,
   });
 });
+export const getMostBookedTours = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const tours = await BookingService.getMostBookedTours();
 
+sendResponse(res, {
+  success: true,
+  statusCode: httpStatus.OK,
+  message: "Most booked tours retrieved",
+  data: tours
+});
+});
 export const BookingController = {
   createBooking,
   getAllBookings,
@@ -239,5 +248,6 @@ export const BookingController = {
   updateBooking,
   deleteBooking,
   getBookingsByTourId,
-   getFilteredBookings
+   getFilteredBookings,
+   getMostBookedTours
 };

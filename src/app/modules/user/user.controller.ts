@@ -143,6 +143,7 @@ const Updatuser = catchAsync(async (req: Request, res: Response, next: NextFunct
         data: result
     })
 })
+
 export const UserControllers = {
     getAllUsers,
     createTourist,
@@ -153,5 +154,6 @@ export const UserControllers = {
     deleteUser,
     addToWishlist,
     removeFromWishlist,
-    getWishlist
+    getWishlist,
+   
 }

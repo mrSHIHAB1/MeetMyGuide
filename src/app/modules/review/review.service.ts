@@ -45,6 +45,35 @@ const getAverageRatingForGuide = async (guideId: string) => {
   ]);
   return res[0] || { _id: null, avgRating: 0, count: 0 };
 };
+const getFeaturedGuides = async () => {
+  const guideAverageRatings = await Review.aggregate([
+    {
+      $match: {
+        isDeleted: false,
+        status: "ACTIVE"
+      }
+    },
+    {
+      $group: {
+        _id: "$guide",
+        averageRating: { $avg: "$rating" },
+        totalReviews: { $sum: 1 }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        guide: "$_id",
+        averageRating: { $round: ["$averageRating", 1] },
+        totalReviews: 1
+      }
+    },
+    { $sort: { averageRating: -1, totalReviews: -1 } },
+    { $limit: 5 }
+  ]);
+
+  return guideAverageRatings;
+};
 
 export const ReviewService = {
   createReview,
@@ -54,4 +83,5 @@ export const ReviewService = {
   updateReview,
   deleteReview,
   getAverageRatingForGuide,
+  getFeaturedGuides
 };
