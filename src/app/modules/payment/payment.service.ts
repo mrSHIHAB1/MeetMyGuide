@@ -10,14 +10,25 @@ const stripe = new Stripe(envVars.STRIPE_SECRET_KEY as string);
 const createCheckoutSession = async (payload: {
   bookingId: string;
   tourId: string;
-  amount: number;
+  amount: number; 
   currency?: string;
   successUrl?: string;
   cancelUrl?: string;
 }) => {
-  const { bookingId, tourId, amount, currency = 'usd', successUrl, cancelUrl } = payload;
+  const {
+    bookingId,
+    tourId,
+    amount,
+    currency = 'bdt',
+    successUrl,
+    cancelUrl,
+  } = payload;
 
-  // Create Stripe checkout session
+  
+  if (!amount || amount <= 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid amount');
+  }
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: [
@@ -28,67 +39,94 @@ const createCheckoutSession = async (payload: {
             name: `Tour Booking - ${tourId}`,
             description: `Payment for booking ${bookingId}`,
           },
-          unit_amount: amount, // amount in cents
+          unit_amount: amount * 100, 
         },
         quantity: 1,
       },
     ],
     mode: 'payment',
-    success_url: successUrl || `${process.env.FRONTEND_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: cancelUrl || `${process.env.FRONTEND_URL}/payment/cancel`,
+    success_url:
+      successUrl ||
+      `${process.env.FRONTEND_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url:
+      cancelUrl || `${process.env.FRONTEND_URL}/payment/cancel`,
     metadata: {
-      bookingId,
-      tourId,
-    },
-  });
-
-  // Save payment record with pending status
-  const payment = await Payment.create({
-    booking: bookingId,
-    tour: tourId,
-    amount,
-    currency,
-    stripeSessionId: session.id,
-    status: PaymentStatus.PENDING,
-    metadata: {
-      sessionId: session.id,
+      bookingId: bookingId.toString(),
+      tourId: tourId.toString(),
+      amount: amount.toString(),     
+      currency: currency.toString(),
     },
   });
 
   return {
-    payment,
     checkoutUrl: session.url,
     sessionId: session.id,
   };
 };
 
+
+
 const confirmPayment = async (sessionId: string) => {
-  // Retrieve session from Stripe
   const session = await stripe.checkout.sessions.retrieve(sessionId);
 
   if (!session) {
     throw new AppError(httpStatus.NOT_FOUND, 'Session not found');
   }
 
-  // Find payment record
-  const payment = await Payment.findOne({ stripeSessionId: sessionId });
-  if (!payment) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Payment not found');
+  if (session.payment_status !== 'paid') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Payment not completed'
+    );
   }
 
-  // Update payment status based on session payment status
-  if (session.payment_status === 'paid') {
-    payment.status = PaymentStatus.COMPLETED;
-    payment.paidAt = new Date();
-    payment.stripePaymentIntentId = session.payment_intent as string;
-    await payment.save();
-  } else if (session.payment_status === 'unpaid') {
-    payment.status = PaymentStatus.PENDING;
-    await payment.save();
+  const metadata = session.metadata;
+
+  if (
+    !metadata ||
+    !metadata.bookingId ||
+    !metadata.tourId ||
+    !metadata.amount ||
+    !metadata.currency
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Invalid payment metadata'
+    );
   }
+
+  const amount = Number(metadata.amount);
+
+  if (isNaN(amount) || amount <= 0) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'Invalid amount value'
+    );
+  }
+
+  const existingPayment = await Payment.findOne({
+    booking: metadata.bookingId,
+  });
+
+  if (existingPayment) {
+    return existingPayment;
+  }
+
+  const payment = await Payment.create({
+    booking: metadata.bookingId,
+    tour: metadata.tourId,
+    amount,
+    currency: metadata.currency,
+    stripeSessionId: session.id,
+    stripePaymentIntentId: session.payment_intent as string,
+    status: PaymentStatus.COMPLETED,
+    paidAt: new Date(),
+  });
 
   return payment.populate(['booking', 'tour']);
 };
+
+
 
 const getPayment = async (id: string) => {
   const payment = await Payment.findById(id).populate(['booking', 'tour']);

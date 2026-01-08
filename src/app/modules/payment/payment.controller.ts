@@ -17,7 +17,7 @@ const createCheckoutSession = catchAsync(async (req: Request, res: Response, nex
     data: {
       sessionId: result.sessionId,
       checkoutUrl: result.checkoutUrl,
-      payment: result.payment,
+     
     },
   });
 });

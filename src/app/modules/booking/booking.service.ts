@@ -159,7 +159,7 @@ const getMostBookedTours = async () => {
     {
       $match: {
         isDeleted: false,
-        status: "CONFIRMED" // or "ACTIVE"
+      // or "ACTIVE"
       }
     },
     {
