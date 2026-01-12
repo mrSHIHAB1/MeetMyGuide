@@ -145,6 +145,18 @@ export const getFilteredToursByGuide = catchAsync(
   }
 );
 
+const getToursByGuideId = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { guideId } = req.params;
+  const result = await TourService.getToursByGuideId(guideId);
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Tours retrieved successfully',
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
 export const TourController = {
   createTour,
   getAllTours,
@@ -153,4 +165,5 @@ export const TourController = {
   deactivateTour,
   getAllToursByFilter,
   getFilteredToursByGuide,
+  getToursByGuideId,
 };

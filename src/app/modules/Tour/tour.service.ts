@@ -222,6 +222,29 @@ const getFilteredToursByGuide = async (guideId: string, filters?: TourFilters) =
   };
 };
 
+const getToursByGuideId = async (guideId: string) => {
+  if (!Types.ObjectId.isValid(guideId)) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Invalid guide ID");
+  }
+
+  const tours = await Tour.find({ isDeleted: false, guide: guideId }).lean();
+  const total = await Tour.countDocuments({ isDeleted: false, guide: guideId });
+
+  // Convert ObjectIds to strings
+  const formattedTours = tours.map((t) => ({
+    ...t,
+    _id: t._id.toString(),
+    guide: t.guide?.toString(),
+    createdAt: t.createdAt?.toISOString(),
+    updatedAt: t.updatedAt?.toISOString(),
+  }));
+
+  return {
+    data: formattedTours,
+    meta: { total },
+  };
+};
+
 export const TourService = {
   createTour,
   getAllTours,
@@ -230,4 +253,5 @@ export const TourService = {
   deactivateTour,
   getAllToursByFilter,
   getFilteredToursByGuide,
+  getToursByGuideId,
 };

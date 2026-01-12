@@ -38,12 +38,16 @@ const getMe = async (cookies: any) => {
     throw new Error("User not found");
   }
 
-  const { _id, email: userEmail, role } = user;
+  const { _id, email: userEmail, role, picture = null,phone = null,address = null, } = user;
 
   return {
     id: _id,
     email: userEmail,
     role,
+    picture,
+    phone,
+    address,
+    
   };
 };
 

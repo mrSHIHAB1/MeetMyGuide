@@ -6,26 +6,19 @@ import bodyParser from 'body-parser';
 
 const router = Router();
 
-// Webhook route must come first and use raw body (not parsed JSON)
 
-
-// Create checkout session
 router.post(
   '/checkout-session',
   validateRequest(createCheckoutSessionZodSchema),
   PaymentController.createCheckoutSession
 );
 
-// Confirm payment (after Stripe redirect)
 router.post('/confirm/:sessionId', PaymentController.confirmPayment);
 
-// Get payment by ID
 router.get('/:id', PaymentController.getPayment);
 
-// Get payment by booking ID
 router.get('/booking/:bookingId', PaymentController.getPaymentByBooking);
 
-// Get payment status
 router.get('/status/check', PaymentController.getPaymentStatus);
 
 export const PaymentRoutes = router;

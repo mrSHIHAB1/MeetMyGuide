@@ -8,7 +8,6 @@ import { fileUploader } from '../../helpers/fileUpload';
 
 const router = Router();
 
-// Create a tour listing (guide or admin) with multiple images upload
 router.post(
 	'/create',
 	fileUploader.upload.array('images', 8),checkAuth(Role.ADMIN ,Role.GUIDE),
@@ -16,22 +15,18 @@ router.post(
 	TourController.createTour
 );
 
-// Get all tours
 router.get('/', TourController.getAllTours);
 
-// Get filtered tours (all tours)
 router.get('/filter', TourController.getAllToursByFilter);
 
-// Get filtered tours by guide from token
 router.get('/filter/guide',  TourController.getFilteredToursByGuide);
 
-// Get single tour
+router.get('/guide/:guideId', TourController.getToursByGuideId);
+
 router.get('/:id', TourController.getTour);
 
-// Update tour (guide or admin)
 router.patch('/:id', fileUploader.upload.array('images', 8),checkAuth(Role.ADMIN), validateRequest(updateTourZodSchema), TourController.updateTour);
 
-// Deactivate (soft delete) a tour (guide or admin)
 router.patch('/deactivate/:id', TourController.deactivateTour);
 
 export const TourRoutes = router;
